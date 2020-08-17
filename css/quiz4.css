@@ -1,0 +1,80 @@
+.buttonContainer {
+    position: relative;
+}
+
+.indexButton {
+    position: absolute;
+    float   : left;
+    width   : 200px;
+    height  : 100px;
+
+    margin-top      : 300px;
+    padding-top     : 40px;
+    padding-bottom  : -40px;
+
+    font-weight : bold;
+    font-size   : 20pt;
+    text-align  : center;
+
+    cursor : pointer;
+}
+
+#solveProblem {
+    margin-left: 50px;
+    background-color: #cc3333;
+}
+#makeProblem {
+    margin-left: 300px;
+    background-color: #44aa44;
+}
+
+#powered {
+    position: absolute;
+    margin-top      : 200px;
+    margin-bottom   : 30px;
+}
+
+/* ** quiz page ******************************** */
+.statement {
+    background-color: #eeeeee;
+    margin-top: 80px;
+    margin-left: 80px;
+    width : 340;
+}
+
+.choices {
+    position: relative;
+    width : 300px;
+    margin-top: 50px;
+    margin-left: 100px;
+}
+.choices div {
+    margin-top: 20px;
+    cursor: pointer;
+}
+
+#a {
+    background-color: #cc888844;
+}
+#b {
+    background-color: #cc88cc44;
+}
+#c {
+    background-color: #88cc8844;
+}
+#d {
+    background-color: #8888cc44;
+}
+#a:hover, #b:hover, #c:hover, #d:hover{
+    background-color: #44dd5577;
+    font-weight: bold;
+}
+
+#answer {
+    border-style: double;
+    margin-top: 80px;
+    visibility: hidden;
+    margin-left: 80px;
+    width : 340;
+    background-color: #dddddd88;
+}

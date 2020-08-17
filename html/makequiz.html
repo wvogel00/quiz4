@@ -1,0 +1,30 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="../css/make4.css">
+        <script type="text/javascript" src="../js/make.js"></script>
+        <meta charset="UTF-8">
+        <title>クイズ4</title>
+    </head>
+    <body>
+        <div class="problem">
+            <div class="statement"><label>問題文<textarea type="text" class="largeInput" id="problem"></textarea></label></div>
+            <div class="choice"><label>A : <input type="text" class="smallInput" id="a"></label></div>
+            <div class="choice"><label>B : <input type="text" class="smallInput" id="b"></label></div>
+            <div class="choice"><label>C : <input type="text" class="smallInput" id="c"></label></div>
+            <div class="choice"><label>D : <input type="text" class="smallInput" id="d"></label></div>
+            <div class="choice"><label>正解 :<select class="tinyInput" id="answer">
+                <option value="a">A</option>
+                <option value="b">B</option>
+                <option value="c">C</option>
+                <option value="d">D</option>
+            </select></div>
+            <div class="statement"><label>解説 :<textarea type="text" class="largeInput" id="explanation"></textarea></label></div>
+
+        <div class="makeButton" id="makeButton">作成する</div>
+        </div>
+
+        <div id="powered">
+            powered by Servant, Haskell
+        </div>
+    </body>
+</html>

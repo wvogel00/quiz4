@@ -1,0 +1,59 @@
+body {
+    background-color: #ccbccccc;
+}
+
+.problem {
+    position    : relative;
+    margin-top  : 40px;
+    margin-left: 80px;
+}
+
+.statement {
+    width : 340px;
+    height: 100px;
+    margin-top: 40px;
+    margin-bottom: 40px;
+}
+.largeInput {
+    width : 300px;
+    height: 80px;
+}
+
+.choice {
+    width : 200px;
+    margin-top: 10px;
+    margin-left: 30px;
+}
+.smallInput {
+    width: 200px;
+}
+.tinyInput {
+    margin-top: 20px;
+    margin-bottom: : 20px;
+    width: 60px;
+    font-weight: bold;
+}
+
+.answer {
+    margin-top: 20px;
+    width: 320px;
+}
+
+.makeButton {
+    width: 120px;
+    padding: 20px;
+    margin-left: 40px;
+    border-style: dotted;
+    text-align: center;
+    background-color: #3333cc99;
+}
+
+.makeButton:hover {
+    cursor: pointer;;
+    background-color: #2222dd99;
+}
+
+#powered {
+    margin-top: 100px;
+    margin-left: 80px;
+}
