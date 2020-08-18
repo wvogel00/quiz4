@@ -23,9 +23,12 @@ dependencies:
 - aeson
 - servant-server
 - wai
+- wai-cors
 - warp
 - http-types
+- http-media
 - text
+- bytestring
 
 library:
   source-dirs: src

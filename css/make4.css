@@ -3,16 +3,16 @@ body {
 }
 
 .problem {
-    position    : relative;
-    margin-top  : 40px;
+    position    : absolute;
+    top  : 10px;
     margin-left: 80px;
 }
 
 .statement {
     width : 340px;
     height: 100px;
-    margin-top: 40px;
-    margin-bottom: 40px;
+    margin-top: 30px;
+    margin-bottom: 20px;
 }
 .largeInput {
     width : 300px;
@@ -21,21 +21,21 @@ body {
 
 .choice {
     width : 200px;
-    margin-top: 10px;
+    margin-top: 5px;
     margin-left: 30px;
 }
 .smallInput {
     width: 200px;
 }
 .tinyInput {
-    margin-top: 20px;
-    margin-bottom: : 20px;
+    margin-top: 10px;
+    margin-bottom: : 10px;
     width: 60px;
     font-weight: bold;
 }
 
 .answer {
-    margin-top: 20px;
+    margin-top: 5px;
     width: 320px;
 }
 
@@ -54,6 +54,6 @@ body {
 }
 
 #powered {
-    margin-top: 100px;
-    margin-left: 80px;
+    position: fixed;
+    bottom   : 30px;
 }

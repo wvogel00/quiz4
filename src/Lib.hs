@@ -1,78 +1,110 @@
 {-# LANGUAGE DataKinds       #-}
 {-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE TypeOperators   #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE OverloadedStrings #-}
-module Lib
-    ( startApp
-    , app
-    ) where
+module Lib where
 
 import Data.Aeson
 import Data.Aeson.TH
-import Data.Text
+import qualified Data.Text as T
+import qualified Data.Text.IO as TIO
+import Network.HTTP.Media ( (//), (/:) )
+import qualified Data.ByteString.Lazy as BS
 import Network.Wai
 import Network.Wai.Handler.Warp
 import Network.HTTP.Types.Status (status200)
 import Servant
+import Network.Wai.Middleware.Cors (simpleCors, cors, simpleCorsResourcePolicy, corsRequestHeaders)
 import Control.Monad.IO.Class (liftIO)
 import Debug.Trace (trace)
 
-data User = User
-    { userId    :: Int
-    , userName  :: String
-    , userScore :: Int
-    } deriving (Eq, Show)
-
-data Choice = A | B | C | D deriving (Eq, Show)
 type Explanation = String
 
 data Quiz = Quiz
-    { sentence  :: String
-    , choices   :: [(Choice, String)]
-    , answer    :: (Choice, Explanation)
+    { statement     :: T.Text
+    , a,b,c,d       :: T.Text
+    , answer        :: T.Text
+    , explanation   :: T.Text
     } deriving (Eq, Show)
 
-data QuizTable = QuizTable
-    { quizId :: String
-    , quizes :: [Quiz]
-    }
+$(deriveJSON defaultOptions ''Quiz)
 
-$(deriveJSON defaultOptions ''User)
+data HTML
 
-type API = "question" :> Get '[JSON] String
-    :<|> "make" :> ReqBody '[JSON] String :> Post '[JSON] [String]
-    :<|> "answer" :> ReqBody '[PlainText] String :> Post '[JSON] String
+data FileType = HTMLFile | CSSFile | JSFile | IMGFile deriving Eq
 
+instance Accept HTML where
+    contentType _ = "text" // "html" /: ("charset", "utf-8")
 
-startApp :: IO ()
-startApp = run 8080 app
+instance MimeRender HTML BS.ByteString where
+    mimeRender _ bs = bs
 
-app :: Application
--- app = serve api userServer
-app req respond = do
-    case pathInfo req of
-        [] -> respond $ serveFile "text/html" "html/index.html"
-        ["js", js] -> respond.serveFile "text/javascript" $ "js/" ++ unpack js
-        ["css", css] -> respond.serveFile "text/css" $ "css/" ++ unpack css
-        ["img", img] -> respond.serveFile "image/png" $ "img/" ++ unpack img
-        x -> print x >> return undefined
+type API = "quiz4" :> Get '[HTML] BS.ByteString
+    :<|> "quiz4" :> "html" :> Raw
+    :<|> "quiz4" :> "css" :> Raw
+    :<|> "quiz4" :> "js" :> Raw
+    :<|> "quiz4" :> "img" :> Raw
+    :<|> "quiz4" :> "get" :> Get '[JSON] Quiz
+    :<|> "quiz4" :> "make" :> ReqBody '[JSON] Quiz :> Post '[PlainText] String
+    -- answerは本質的に不要API．get APIの他に，getWithoutAnswer APIが実装されれば必要となる
+    :<|> "quiz4" :> "answer" :> ReqBody '[JSON] String :> Post '[PlainText] String
 
-serveFile mime filePath = responseFile status200 [("Content-Type",mime)] filePath Nothing
-
-quizServer :: Server API
-quizServer = getQuiz
-        :<|> postNewQuiz
+quizServer :: BS.ByteString -> Server API
+quizServer top = getHtml top
+        :<|> getStatics HTMLFile
+        :<|> getStatics CSSFile
+        :<|> getStatics JSFile
+        :<|> getStatics IMGFile
+        :<|> getQuiz
+        :<|> postMake
         :<|> postAnswer
 
+api :: Proxy API
+api = Proxy
+
+startApp :: IO ()
+startApp = do
+    top <- BS.readFile "html/index.html"
+    run 8080
+        $ cors (const $ Just policy)
+        $ serve api
+        $ quizServer top
+
+policy = simpleCorsResourcePolicy
+        {corsRequestHeaders = ["Content-Type"]}
+
+getHtml html = liftIO $ return html
+
+getStatics HTMLFile = serveDirectoryWebApp "html"
+getStatics CSSFile = serveDirectoryWebApp "css"
+getStatics JSFile = serveDirectoryWebApp "js"
+getStatics IMGFile = serveDirectoryWebApp "img"
+
 postAnswer :: String -> Handler String
-postAnswer msg = return $ trace msg "received"
+postAnswer msg = do
+    liftIO $ putStrLn ("receiveddata = " ++ msg)
+    -- 正解判定
+    return $ if msg == "A" then "O" else "X"
 
-postNewQuiz :: String -> Handler [String]
-postNewQuiz str = return []
+postMake :: Quiz -> Handler String
+postMake q = do
+    liftIO $ TIO.putStrLn $ T.append "post 'make' request = " (statement q)
+    liftIO $ registerDB q
+    return "success"
 
-getQuiz :: Handler String
-getQuiz = return []
+registerDB :: Quiz -> IO ()
+registerDB quiz = return ()
 
--- 作問
-posingQServer :: Quiz
-posingQServer = Quiz {sentence="?", answer=(A,"the sun"), choices = []}
+getQuiz :: Handler Quiz
+getQuiz = do
+    liftIO $ TIO.putStrLn "get 'get' request . 新しいクイズを送信します"
+    return $ Quiz
+        { statement  = "curry"
+        , a = "a"
+        , b = "b"
+        , c = "c"
+        , d = "d"
+        , answer = "haskell"
+        , explanation = "functional programming language"
+        }

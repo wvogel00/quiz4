@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 62f16fac017b0ec9b62116c14637ea5934f597aaa49982a0b6c771eb17766caf
+-- hash: a15a68081f41cd01c2a812882039a181a2f95f1b804e4e8b212ccd41ace16c6d
 
 name:           quiz4
 version:        0.1.0.0
@@ -34,10 +34,13 @@ library
   build-depends:
       aeson
     , base >=4.7 && <5
+    , bytestring
+    , http-media
     , http-types
     , servant-server
     , text
     , wai
+    , wai-cors
     , warp
   default-language: Haskell2010
 
@@ -51,11 +54,14 @@ executable quiz4-exe
   build-depends:
       aeson
     , base
+    , bytestring
+    , http-media
     , http-types
     , quiz4
     , servant-server
     , text
     , wai
+    , wai-cors
     , warp
   default-language: Haskell2010
 
@@ -70,13 +76,16 @@ test-suite quiz4-test
   build-depends:
       aeson
     , base
+    , bytestring
     , hspec
     , hspec-wai
     , hspec-wai-json
+    , http-media
     , http-types
     , quiz4
     , servant-server
     , text
     , wai
+    , wai-cors
     , warp
   default-language: Haskell2010

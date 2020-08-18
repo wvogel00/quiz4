@@ -12,10 +12,10 @@ window.onload = function()
 
 function SolveClicked()
 {
-    alert ("hey");
+    window.location.href = "quiz4/html/quiz.html";
 }
 
 function makeClicked()
 {
-    alert ("hey2");
+    window.location.href = "quiz4/html/makequiz.html";
 }
