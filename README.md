@@ -1,11 +1,10 @@
 # quiz4
 マーク式の資格試験の勉強などを想定した，4択クイズアプリケーション．
 (今は亡きセンター試験勉強ツールとしても使えたかもしれない．)
-servantによりweb APIとして提供
+servantにを使ってweb APIとして提供
 
 ## 動作環境
 MacOS Catalina 10.15.6
-Ubuntu 10.xx
 
 CORS対策をしているはずだが，動作未検証
 
@@ -41,7 +40,15 @@ topページを返す．hogehoge.comで運用する場合，hogehoge.com/quiz4 �
 }
 ```
 
-## 導入手順
-### mac
-install mysql  
-```brew install mysql```  
+## スクリーンショット
+下の画像はどれもhtml/cssで書かれており，servantの提供するAPIとは関係がない．動作検証のために作成した．  
+全てをCUIアプリケーションで完結させることもできる．
+
+```/quiz4``` で得られるhtml．webアプリとして運用する場合には必要なAPIだが，CUI上で使用する分には不要である．
+<img width="568" alt="1" src="https://user-images.githubusercontent.com/991030/90571509-db89e400-e1ec-11ea-8e8a-c115a3fb5f57.png">
+
+```/quiz4/get``` で取得した問題を表示するための画面．いわばゲーム画面．
+<img width="538" alt="2" src="https://user-images.githubusercontent.com/991030/90571524-e5134c00-e1ec-11ea-9bc9-8e47835ffc64.png">
+
+```/quiz4/make``` で問題をサーバーにpostする画面．今回の場合，jsで解説文以外に空白があるときはpostしないようにしているが，その状態でpostしたとしても，Servantコードではクイズを登録する際の結果を```RegisterResult```型で管理しており，その中の```LackAnyValue Text```から取り出された文字列が返ってくる．
+<img width="486" alt="3" src="https://user-images.githubusercontent.com/991030/90571541-ee9cb400-e1ec-11ea-8e28-502fd215914b.png">
