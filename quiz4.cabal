@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: a15a68081f41cd01c2a812882039a181a2f95f1b804e4e8b212ccd41ace16c6d
+-- hash: 50ebdc4e45467b807ad5654d6ea5ade20a4dededde9b1733c37da153428905d0
 
 name:           quiz4
 version:        0.1.0.0
@@ -37,8 +37,10 @@ library
     , bytestring
     , http-media
     , http-types
+    , random
     , servant-server
     , text
+    , time
     , wai
     , wai-cors
     , warp
@@ -58,8 +60,10 @@ executable quiz4-exe
     , http-media
     , http-types
     , quiz4
+    , random
     , servant-server
     , text
+    , time
     , wai
     , wai-cors
     , warp
@@ -83,8 +87,10 @@ test-suite quiz4-test
     , http-media
     , http-types
     , quiz4
+    , random
     , servant-server
     , text
+    , time
     , wai
     , wai-cors
     , warp

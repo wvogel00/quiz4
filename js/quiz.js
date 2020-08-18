@@ -1,7 +1,9 @@
 var path = "localhost:8080"
+var solvingQuiz;
 
 window.onload = function()
 {
+    getNextQuiz();
     document.getElementById('a').onclick = function ()
     {
         getResultOf('a');
@@ -25,24 +27,28 @@ window.onload = function()
 }
 
 function getResultOf(choice) {
-    var result = true;
-
-    var answerDiv = document.getElementById("answer");
+    // 解答表示
+    var answerDiv = document.getElementById("answerblock");
     var nextDiv = document.getElementById("nextButton");
-
-    postJsonData("/quiz4/answer", JSON.stringify("A"));
-
-    answerDiv.style.visibility = "visible";
-    nextDiv.style.visibility = "visible";
-    if(result != true)  //誤答の場合
+    
+    var selected = document.getElementById(choice);
+    if (selected.textContent == solvingQuiz.answer)
+    {
+        answerDiv.style.backgroundColor = "#44ccccaa";
+    }
+    else
     {
         answerDiv.style.backgroundColor = "#cc4444aa";
     }
+
+
+    answerDiv.style.visibility = "visible";
+    nextDiv.style.visibility = "visible";
 }
 
 function getNextQuiz()
 {
-    var answerDiv = document.getElementById("answer");
+    var answerDiv = document.getElementById("answerblock");
     var nextDiv = document.getElementById("nextButton");
     answerDiv.style.visibility = "hidden";
     nextDiv.style.visibility = "hidden";
@@ -57,6 +63,23 @@ function getJsonData(url)
     xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.onload = () => {
         console.log(xhr.responseText);
+        var rec = JSON.parse(xhr.response);
+        var statementDiv = document.getElementById("problemSentence");
+        var aDiv = document.getElementById("a");
+        var bDiv = document.getElementById("b");
+        var cDiv = document.getElementById("c");
+        var dDiv = document.getElementById("d");
+        var answerDiv = document.getElementById("answer");
+        var expDiv = document.getElementById("explanation");
+        statementDiv.textContent = rec.statement;
+        aDiv.textContent = rec.a;
+        bDiv.textContent = rec.b;
+        cDiv.textContent = rec.c;
+        dDiv.textContent = rec.d;
+        answerDiv.textContent = rec.answer;
+        expDiv.textContent = rec.explanation;
+
+        solvingQuiz = rec;
     }
     xhr.onerror = () => {
         console.log(xhr.status);

@@ -14,18 +14,17 @@ function makeQuiz() {
     d = document.getElementById("d");
     answer = document.getElementById("answer");
     exp = document.getElementById("explanation");
-    var str = "{\"statement\":\"this is test\",\"a\":\"a\",\"b\":\"b\",\"c\":\"c\",\"d\":\"d\",\"answer\":\"a\",\"explanation\":\"\"}";
-    //postJsonData("/quiz4/make",str);
     
     if(existEmptyInput(prob,a,b,c,d))
     {
-        //alert ("入力されていない項目があります（解説以外は必須項目です）")
-        //return;
+        alert ("入力されていない項目があります（解説以外は必須項目です）")
+        return;
     }
-
-    //全て入力されている場合，サーバーにリクエストを投げる
-    var quiz = makeQuizObj(prob,a,b,c,d,answer,exp);
-    postJsonData("/quiz4/make",JSON.stringify(quiz));
+    else
+    {
+        var quiz = makeQuizObj(prob,a,b,c,d,answer,exp);
+        postJsonData("/quiz4/make",JSON.stringify(quiz));
+    }
 }
 
 function makeQuizObj(prob,a,b,c,d,answer,exp)
@@ -36,7 +35,8 @@ function makeQuizObj(prob,a,b,c,d,answer,exp)
     quiz.b = b.value;
     quiz.c = c.value;
     quiz.d = d.value;
-    quiz.answer = answer.value;
+    var answerDiv = document.getElementById(answer.value);
+    quiz.answer = answerDiv.value;
     quiz.explanation = exp.value;
 
     return quiz;
