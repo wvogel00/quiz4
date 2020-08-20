@@ -4,8 +4,8 @@
 servantにを使ってweb APIとして提供
 
 ## 動作環境
-MacOS Catalina 10.15.6
-
+- MacOS Catalina 10.15.6
+- Ubuntu 16.04.6 LTS
 CORS対策をしているはずだが，動作未検証
 
 ## API
