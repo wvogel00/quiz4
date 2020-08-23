@@ -20,6 +20,9 @@ import Network.Wai.Middleware.Cors (cors, simpleCorsResourcePolicy, corsRequestH
 import Control.Monad.IO.Class (liftIO)
 import System.Random
 import Data.Time.Clock
+import Database.HDBC.PostgreSQL (Connection, connectPostgreSQL)
+import Database.HDBC.Schema.PostgreSQL (driverPostgreSQL)
+
 
 data Quiz = Quiz
     { statement     :: T.Text
@@ -140,3 +143,12 @@ decodeQ q = flip T.append "\n" . T.concat
     $ map format [statement, a, b, c, d , answer, explanation]
     where
         format f = flip T.append " " . T.filter (/='\n') $ f q
+
+connectDB :: Quiz -> IO Connection
+connectDB q = connectPostgreSQL $
+    "host = localhost"
+    ++ "port=5432"
+    ++ "user=test"
+    ++ "dbname=testdb"
+    ++ "password=test"
+    ++ "sslmode=disable"

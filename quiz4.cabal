@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 2aaa4d2743edf3fe3f7e0c7e33a27e18eea17249550e64d5bbf5c1d72084c7d7
+-- hash: 88487a165738e8493ab7cc01e6d48e7cb4be466f3e6eaf51fd3e5b67849ec6e4
 
 name:           quiz4
 version:        0.1.1.0
@@ -32,12 +32,16 @@ library
   hs-source-dirs:
       src
   build-depends:
-      aeson
+      HDBC
+    , HDBC-postgresql
+    , aeson
     , base >=4.7 && <5
     , bytestring
     , http-media
     , http-types
     , random
+    , relational-query
+    , relational-query-HDBC
     , servant-server
     , text
     , time
@@ -54,13 +58,17 @@ executable quiz4-exe
       app
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      aeson
+      HDBC
+    , HDBC-postgresql
+    , aeson
     , base
     , bytestring
     , http-media
     , http-types
     , quiz4
     , random
+    , relational-query
+    , relational-query-HDBC
     , servant-server
     , text
     , time
@@ -78,7 +86,9 @@ test-suite quiz4-test
       test
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      aeson
+      HDBC
+    , HDBC-postgresql
+    , aeson
     , base
     , bytestring
     , hspec
@@ -88,6 +98,8 @@ test-suite quiz4-test
     , http-types
     , quiz4
     , random
+    , relational-query
+    , relational-query-HDBC
     , servant-server
     , text
     , time

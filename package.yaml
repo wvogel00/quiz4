@@ -31,6 +31,11 @@ dependencies:
 - bytestring
 - random
 - time
+# - postgresql-simple
+- HDBC
+- HDBC-postgresql
+- relational-query-HDBC
+- relational-query
 
 library:
   source-dirs: src
