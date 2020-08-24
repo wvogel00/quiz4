@@ -22,7 +22,7 @@ import Network.Wai.Middleware.Cors (cors, simpleCorsResourcePolicy, corsRequestH
 import Control.Monad.IO.Class (liftIO)
 import System.Random
 import Data.Time.Clock
-import DB
+import qualified QuizDB as DB
 
 data Quiz = Quiz
     { statement     :: T.Text
