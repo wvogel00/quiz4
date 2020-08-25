@@ -9,7 +9,7 @@
 module QuizDB where
 
 -- import qualified Data.Text as T
--- import Data.ByteString (ByteString)
+-- import Data.ByteString.Char8
 import Database.HDBC (commit)
 import Database.HDBC.PostgreSQL (Connection, connectPostgreSQL)
 import Database.HDBC.Schema.PostgreSQL (driverPostgreSQL)
@@ -25,7 +25,7 @@ $(defineTableFromDB
     driverPostgreSQL
     "public"
     "quiz4"
-    [''Show]
+    [''Show, ''Generic]
     )
 
 getAllQuiz :: IO [Quiz4]

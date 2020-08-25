@@ -23,6 +23,7 @@ import Control.Monad.IO.Class (liftIO)
 import System.Random
 import Data.Time.Clock
 import qualified QuizDB as DB
+import Data.Maybe (Maybe(..), fromJust)
 
 data Quiz = Quiz
     { statement     :: T.Text
@@ -143,3 +144,22 @@ decodeQ q = flip T.append "\n" . T.concat
     $ map format [statement, a, b, c, d , answer, explanation]
     where
         format f = flip T.append " " . T.filter (/='\n') $ f q
+
+registerFromTxt :: FilePath -> IO ()
+registerFromTxt filepath = do
+    xs <- map toQuiz4 . zip [1..] . lines <$> readFile filepath
+    mapM_ DB.insertQuiz xs
+    qs <- DB.getAllQuiz
+    mapM_ (putStrLn . fromJust . DB.statement) qs
+    where
+        toQuiz4 (i, str) = DB.Quiz4
+            { DB.id = Just i
+            , DB.statement = Just s
+            , DB.a = Just a'
+            , DB.b = Just b'
+            , DB.c = Just c'
+            , DB.d = Just d'
+            , DB.answer = Just ans
+            , DB.explanation = Just ex
+            } where
+                [s,a',b',c',d',ans,ex] = words str
