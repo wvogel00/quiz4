@@ -10,6 +10,8 @@ module QuizDB where
 
 -- import qualified Data.Text as T
 -- import Data.ByteString.Char8
+import Data.Maybe
+import Data.List
 import Database.HDBC (commit)
 import Database.HDBC.PostgreSQL (Connection, connectPostgreSQL)
 import Database.HDBC.Schema.PostgreSQL (driverPostgreSQL)
@@ -25,7 +27,7 @@ $(defineTableFromDB
     driverPostgreSQL
     "public"
     "quiz4"
-    [''Show, ''Generic]
+    [''Show, ''Eq, ''Generic]
     )
 
 getAllQuiz :: IO [Quiz4]
@@ -38,3 +40,10 @@ insertQuiz q = do
     conn <- connectDB
     runInsert conn insertQuiz4 q
     commit conn
+
+findDuplicate :: Quiz4 -> IO (Maybe Quiz4)
+findDuplicate q = do
+    qs <- getAllQuiz
+    return $ find (isSame statement) qs
+    where
+        isSame f x = f x == f q && f q /= Nothing

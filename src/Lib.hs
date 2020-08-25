@@ -24,17 +24,12 @@ import System.Random
 import Data.Time.Clock
 import qualified QuizDB as DB
 import Data.Maybe (Maybe(..), fromJust)
-
-data Quiz = Quiz
-    { statement     :: T.Text
-    , a,b,c,d       :: T.Text
-    , answer        :: T.Text
-    , explanation   :: T.Text
-    } deriving (Eq, Show)
+import Data.List (isInfixOf)
+import Data.Functor
 
 database = "db/quizfile"
 
-$(deriveJSON defaultOptions ''Quiz)
+$(deriveJSON defaultOptions ''DB.Quiz4)
 
 data FileType = HTMLFile | CSSFile | JSFile | IMGFile deriving Eq
 
@@ -50,8 +45,8 @@ type API = "quiz4" :> Get '[HTML] BS.ByteString
     :<|> "quiz4" :> "css" :> Raw
     :<|> "quiz4" :> "js" :> Raw
     :<|> "quiz4" :> "img" :> Raw
-    :<|> "quiz4" :> "get" :> Get '[JSON] Quiz
-    :<|> "quiz4" :> "make" :> ReqBody '[JSON] Quiz :> Post '[PlainText] T.Text
+    :<|> "quiz4" :> "get" :> Get '[JSON] DB.Quiz4
+    :<|> "quiz4" :> "make" :> ReqBody '[JSON] DB.Quiz4 :> Post '[PlainText] T.Text
 
 quizServer :: BS.ByteString -> Server API
 quizServer top = getHtml top
@@ -85,9 +80,8 @@ getStatics IMGFile = serveDirectoryWebApp "img"
 
 data RegisterResult = Done | AlreadyExist | ValueLack T.Text | Fail deriving Eq
 
-postMake :: Quiz -> Handler T.Text
+postMake :: DB.Quiz4 -> Handler T.Text
 postMake q = do
-    liftIO $ TIO.putStrLn $ T.append "post 'make' request = " (statement q)
     result <- liftIO $ registerDB q
     case result of
         Done -> return "success"
@@ -95,55 +89,32 @@ postMake q = do
         ValueLack v -> return $ T.append v "は必須項目です"
         Fail -> return "fail. please report to developer."
 
-registerDB :: Quiz -> IO RegisterResult
+registerDB :: DB.Quiz4 -> IO RegisterResult
 registerDB q = do
-    qs <- T.lines <$> TIO.readFile database
-    if any (T.isInfixOf $ statement q) qs
+    qs <- DB.getAllQuiz
+    double <- DB.findDuplicate q
+    if double /= Nothing
         then return AlreadyExist
         else case lackAnyValue q of
-            Nothing -> do
-                TIO.appendFile database $ decodeQ q
-                return Done
+            Nothing -> DB.insertQuiz q $> Done
             Just x  -> return $ ValueLack x
 
-lackAnyValue :: Quiz -> Maybe T.Text
+lackAnyValue :: DB.Quiz4 -> Maybe T.Text
 lackAnyValue q
-    | T.null (statement q) = Just "問題文"
-    | T.null (a q) = Just "選択肢A"
-    | T.null (b q) = Just "選択肢B"
-    | T.null (c q) = Just "選択肢C"
-    | T.null (d q) = Just "選択肢D"
-    | T.null (answer q) = Just "解答"
-    | otherwise = Nothing
+    | DB.statement q == Nothing = Just "問題文"
+    | DB.a q         == Nothing = Just "選択肢A"
+    | DB.b q         == Nothing = Just "選択肢B"
+    | DB.c q         == Nothing = Just "選択肢C"
+    | DB.d q         == Nothing = Just "選択肢D"
+    | DB.answer q    == Nothing = Just "解答"
+    | otherwise                 = Nothing
 
-getQuiz :: Handler Quiz
+getQuiz :: Handler DB.Quiz4
 getQuiz = do
-    liftIO $ TIO.putStrLn "get 'get' request . 新しいクイズを送信します"
-    qs <- liftIO $ T.lines <$> TIO.readFile database
+    qs <- liftIO $ DB.getAllQuiz
     now <- liftIO $ floor . utctDayTime <$> getCurrentTime :: Handler Int
-    liftIO $ putStrLn $ "time == " ++ show now
     let i = mod now $ length qs
-    return $ encodeQ $ qs !! i
-
-encodeQ :: T.Text -> Quiz
-encodeQ = genQuiz . T.words
-    where
-        genQuiz [state,a,b,c,d,ans] = genQuiz [state,a,b,c,d,ans,""]
-        genQuiz [state,a,b,c,d,ans,ex] = Quiz
-            { statement = state
-            , a = a
-            , b = b
-            , c = c
-            , d = d
-            , answer = ans
-            , explanation = ex
-            }
-
-decodeQ :: Quiz -> T.Text
-decodeQ q = flip T.append "\n" . T.concat
-    $ map format [statement, a, b, c, d , answer, explanation]
-    where
-        format f = flip T.append " " . T.filter (/='\n') $ f q
+    return $ qs !! i
 
 registerFromTxt :: FilePath -> IO ()
 registerFromTxt filepath = do
