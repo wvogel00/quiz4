@@ -23,7 +23,7 @@ import System.Random
 import Data.Time.Clock
 import qualified QuizDB as DB
 import Data.Maybe (Maybe(..), fromJust)
-import Data.List (isInfixOf, permutations)
+import Data.List (isInfixOf, permutations, lookup)
 import Data.Functor
 
 database = "db/quizfile"
@@ -120,10 +120,7 @@ getQuiz = do
         -- 問題の並び替え
         rearrange r q = let [l,m,n,o] = (!!) (permutations [A .. D]) . mod r $ product [1..4]
             in q {DB.a = pick l q, DB.b = pick m q, DB.c = pick n q, DB.d = pick o q}
-        pick A = DB.a
-        pick B = DB.b
-        pick C = DB.c
-        pick D = DB.d
+        pick choice = fromJust . lookup choice $ zip [A ..] [DB.a, DB.b, DB.c, DB.d]
 
 -- txtファイルに保存していたクイズをDBに移行する際に使用する
 registerFromTxt :: FilePath -> IO ()
