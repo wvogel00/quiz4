@@ -41,6 +41,10 @@
     width : 340;
 }
 
+#problemSentence {
+  white-space: pre-wrap;
+}
+
 .choices {
     position: relative;
     width : 300px;
