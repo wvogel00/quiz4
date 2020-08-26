@@ -11,7 +11,6 @@ module Lib where
 import Data.Aeson
 import Data.Aeson.TH
 import qualified Data.Text as T
-import qualified Data.Text.IO as TIO
 import Network.HTTP.Media ( (//), (/:) )
 import qualified Data.ByteString.Lazy as BS
 import Network.Wai
@@ -24,7 +23,7 @@ import System.Random
 import Data.Time.Clock
 import qualified QuizDB as DB
 import Data.Maybe (Maybe(..), fromJust)
-import Data.List (isInfixOf)
+import Data.List (isInfixOf, permutations)
 import Data.Functor
 
 database = "db/quizfile"
@@ -109,18 +108,30 @@ lackAnyValue q
     | DB.answer q    == Nothing = Just "解答"
     | otherwise                 = Nothing
 
+data Choise = A | B | C | D deriving (Eq, Show, Enum)
+
 getQuiz :: Handler DB.Quiz4
 getQuiz = do
     qs <- liftIO $ DB.getAllQuiz
     now <- liftIO $ floor . utctDayTime <$> getCurrentTime :: Handler Int
     let i = mod now $ length qs
-    return $ qs !! i
+    return $ rearrange now $ qs !! i
+    where
+        -- 問題の並び替え
+        rearrange r q = let [l,m,n,o] = (!!) (permutations [A .. D]) . mod r $ product [1..4]
+            in q {DB.a = pick l q, DB.b = pick m q, DB.c = pick n q, DB.d = pick o q}
+        pick A = DB.a
+        pick B = DB.b
+        pick C = DB.c
+        pick D = DB.d
 
+-- txtファイルに保存していたクイズをDBに移行する際に使用する
 registerFromTxt :: FilePath -> IO ()
 registerFromTxt filepath = do
     xs <- map toQuiz4 . zip [1..] . lines <$> readFile filepath
     mapM_ DB.insertQuiz xs
     qs <- DB.getAllQuiz
+    putStrLn "以下が登録されています"
     mapM_ (putStrLn . fromJust . DB.statement) qs
     where
         toQuiz4 (i, str) = DB.Quiz4

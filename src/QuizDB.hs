@@ -8,17 +8,14 @@
 
 module QuizDB where
 
--- import qualified Data.Text as T
--- import Data.ByteString.Char8
-import Data.Maybe
-import Data.List
+import Data.Maybe (Maybe)
+import Data.List (find)
 import Database.HDBC (commit)
-import Database.HDBC.PostgreSQL (Connection, connectPostgreSQL)
 import Database.HDBC.Schema.PostgreSQL (driverPostgreSQL)
 import Database.HDBC.Query.TH (defineTableFromDB)
-import Database.HDBC.Record.Query      (runQuery')
-import Database.HDBC.Record.Insert      (runInsert)
-import Database.Relational.Type        (insert, relationalQuery)
+import Database.HDBC.Record.Query (runQuery')
+import Database.HDBC.Record.Insert (runInsert)
+import Database.Relational.Type (relationalQuery)
 import GHC.Generics (Generic)
 import DB
 
