@@ -93,3 +93,11 @@
     cursor: pointer;
     background-color: #66cc5599;
 }
+
+#answer {
+    font-weight: bold;
+}
+
+#explanation {
+  white-space: pre-wrap;
+}
