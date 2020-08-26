@@ -121,24 +121,3 @@ getQuiz = do
         rearrange r q = let [l,m,n,o] = (!!) (permutations [A .. D]) . mod r $ product [1..4]
             in q {DB.a = pick l q, DB.b = pick m q, DB.c = pick n q, DB.d = pick o q}
         pick choice = fromJust . lookup choice $ zip [A ..] [DB.a, DB.b, DB.c, DB.d]
-
--- txtファイルに保存していたクイズをDBに移行する際に使用する
-registerFromTxt :: FilePath -> IO ()
-registerFromTxt filepath = do
-    xs <- map toQuiz4 . zip [1..] . lines <$> readFile filepath
-    mapM_ DB.insertQuiz xs
-    qs <- DB.getAllQuiz
-    putStrLn "以下が登録されています"
-    mapM_ (putStrLn . fromJust . DB.statement) qs
-    where
-        toQuiz4 (i, str) = DB.Quiz4
-            { DB.id = Just i
-            , DB.statement = Just s
-            , DB.a = Just a'
-            , DB.b = Just b'
-            , DB.c = Just c'
-            , DB.d = Just d'
-            , DB.answer = Just ans
-            , DB.explanation = Just ex
-            } where
-                [s,a',b',c',d',ans,ex] = words str
