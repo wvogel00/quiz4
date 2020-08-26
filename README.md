@@ -52,3 +52,10 @@ topページを返す．hogehoge.comで運用する場合，hogehoge.com/quiz4 �
 
 ```/quiz4/make``` で問題をサーバーにpostする画面．今回の場合，jsで解説文以外に空白があるときはpostしないようにしているが，その状態でpostしたとしても，Servantコードではクイズを登録する際の結果を```RegisterResult```型で管理しており，その中の```LackAnyValue Text```から取り出された文字列が返ってくる．
 <img width="486" alt="3" src="https://user-images.githubusercontent.com/991030/90571541-ee9cb400-e1ec-11ea-8e28-502fd215914b.png">
+
+## memo
+UbuntuにHDBC-postgreSQLをインストールするには先に次のコマンドで必要なパッケージを導入し，
+環境を整えておく必要がある．
+```
+sudo apt-get install -y libghc-haskelldb-hdbc-postgresql-dev
+```
